@@ -5,29 +5,54 @@ import Rodape from "./Rodape.js"
 import iconeCerto from "./img/icone_certo.png"
 import iconeErro from "./img/icone_erro.png"
 import iconeQuase from "./img/icone_quase.png"
+import iconePlay from "./img/seta_play.png"
+import iconeVirar from "./img/seta_virar.png"
 import React from "react"
+import questions from './questions.js';
 
 
-
-export default function ScreenContainer(props) {
+export default function ScreenContainer() {
 
     const cores = {
-        verde : "#2FBE34",
-        amarelo:"#ff922e",
-        vermelho:"#ff3030"
+        verde: "#2FBE34",
+        amarelo: "#ff922e",
+        vermelho: "#ff3030",
+        preto: "#333333"
     }
 
-    const icones = {certo:iconeCerto,
-                    erro:iconeErro,
-                    quase:iconeQuase}
+    const icones = {
+        certo: iconeCerto,
+        erro: iconeErro,
+        quase: iconeQuase,
+        play: iconePlay,
+        virar: iconeVirar
+    }
 
-    const [perguntas, setPerguntas] = React.useState([])
+
+    //estados das cartas
+    const [perguntasClicadas, setPerguntasClicadas] = React.useState([])
+    const [perguntasViradas, setPerguntasViradas] = React.useState([])
+    const [perguntasRespondidas, setPerguntasRespondidas] = React.useState([])
 
     return (
         <Screen>
             <Cabecalho />
-            <Deck questions={props.questions} cores={cores} icones={icones} perguntas = {perguntas} setPerguntas = {setPerguntas}/>
-            <Rodape cores={cores} icones={icones} perguntas = {perguntas} setPerguntas = {setPerguntas}/>
+            <Deck questions={questions}
+                cores={cores}
+                icones={icones}
+                perguntasClicadas={perguntasClicadas}
+                setPerguntasClicadas={setPerguntasClicadas}
+                perguntasViradas={perguntasViradas}
+                setPerguntasViradas={setPerguntasViradas}
+                perguntasRespondidas={perguntasRespondidas}
+                setPerguntasRespondidas={setPerguntasRespondidas}
+            />
+            <Rodape
+                cores={cores}
+                icones={icones}
+                perguntasRespondidas={perguntasRespondidas}
+                setPerguntasRespondidas={setPerguntasRespondidas}
+            />
         </Screen>
     )
 }

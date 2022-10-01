@@ -1,10 +1,15 @@
+import React from "react"
 import styled from "styled-components"
 import play from "./img/seta_play.png"
 import virar from "./img/seta_virar.png"
 
-export default function Pergunta({ idx, questions, cores, icones, perguntas, setPergunas }) {
 
-    const displayPergunta = undefined;
+export default function Pergunta(props) {
+
+
+    const { idx, question, cores, icones, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
+        perguntasRespondidas, setPerguntasRespondidas } = props
+
 
     function perguntaFechada(idx) {
         return (
@@ -18,7 +23,7 @@ export default function Pergunta({ idx, questions, cores, icones, perguntas, set
     function perguntaAberta(idx) {
         return (
             <div className="aberta" >
-                <p>{questions[idx].textQuestion}</p>
+                <p>{question.textQuestion}</p>
                 <img onClick={() => virarPergunta(idx)} src={virar} alt="?" />
             </div>
         )
@@ -26,37 +31,29 @@ export default function Pergunta({ idx, questions, cores, icones, perguntas, set
 
     function resposta(idx) {
         return (
-            <div className="aberta" onClick={() => clickPergunta(idx)} >
-                <p>{questions[idx].textAnswer}</p>
-            </div>
-        )
-    }
-
-    function respostaBonus(idx) {
-        return (
             <div className="aberta">
-                <p>{questions[idx].textAnswer}</p>
+                <p>{question.textAnswer}</p>
                 <ContainerBotoes cores={cores}>
-                    <button onClick={() => responderPergunta("vermelho")} className="vermelho">Não lembrei</button>
-                    <button onClick={() => responderPergunta("amarelo")} className="amarelo">Quase não lembrei</button>
-                    <button onClick={() => responderPergunta("verde")} className="verde">Zap!</button>
+                    <button onClick={() => responderPergunta(idx, "errado")} className="vermelho">Não lembrei</button>
+                    <button onClick={() => responderPergunta(idx, "quase")} className="amarelo">Quase não lembrei</button>
+                    <button onClick={() => responderPergunta(idx, "certo")} className="verde">Zap!</button>
                 </ContainerBotoes>
             </div>
         )
     }
 
-    function perguntaFechadaMarcada(idx,resultado) {
+    function perguntaFechadaMarcada(idx, resultado) {
 
         let ic = undefined;
         let classe = undefined;
 
-        if(resultado === "certo"){
+        if (resultado === "certo") {
             ic = icones.certo
             classe = "verde"
-        }else if(resultado === "quase"){
+        } else if (resultado === "quase") {
             ic = icones.quase
-            classe ="amarelo"
-        }else if(resultado === "erro"){
+            classe = "amarelo"
+        } else if (resultado === "errado") {
             ic = icones.erro
             classe = "vermelho"
         }
@@ -69,41 +66,69 @@ export default function Pergunta({ idx, questions, cores, icones, perguntas, set
 
         )
     }
+    /*
+        const estado1 = perguntaFechada(idx)
+        const estado2 = perguntaAberta(idx)
+        const estado3 = resposta(idx)
+        const estado5 = perguntaFechadaMarcada(idx, "certo")
+        const estado6 = perguntaFechadaMarcada(idx, "quase")
+        const estado7 = perguntaFechadaMarcada(idx, "erro")
+    */
 
-    const estado1 = perguntaFechada(0)
-    const estado2 = perguntaAberta(0)
-    const estado3 = resposta(0)
-    const estado4 = respostaBonus(0)
-    const estado5 = perguntaFechadaMarcada(0,"certo")
-    const estado6 = perguntaFechadaMarcada(0,"quase")
-    const estado7 = perguntaFechadaMarcada(0,"erro")
-
+    const [displayPergunta, setDisplayPergunta] = React.useState(perguntaFechada(idx));
 
     function clickPergunta(idx) {
+        console.log("clickPergunta acionado")
+        const novoEstado = [...perguntasClicadas]
 
+        if (novoEstado === []) {
+            novoEstado.push(idx)
+        } else {
+
+            novoEstado.pop()
+            novoEstado.push(idx)
+        }
+
+        setDisplayPergunta(perguntaAberta(idx))
+        setPerguntasClicadas(novoEstado)
     }
+
 
     function virarPergunta(idx) {
         console.log("virarPergunta(idx) Acionado")
+        const novoEstado = [...perguntasViradas]
+
+        if (novoEstado === []) {
+            novoEstado.push(idx)
+        } else {
+            novoEstado.pop()
+            novoEstado.push(idx)
+        }
+
+        setDisplayPergunta(resposta(idx))
+        setPerguntasViradas(novoEstado)
     }
 
-    function responderPergunta(corIndice) {
-        /*corIndice == r || corIndice == g || corIndice == b*/
-        console.log("Pergunta responderPergunta acionado", corIndice)
-    }
+    function responderPergunta(idx, resultado) {
+        console.log("Pergunta responderPergunta acionado", resultado)
+        const novoEstado = [...perguntasRespondidas]
 
+        if (novoEstado === []) {
+            novoEstado.push(idx)
+        } else {
+            novoEstado.pop()
+            novoEstado.push(idx)
+        }
+
+        setDisplayPergunta(perguntaFechadaMarcada(idx, resultado))
+        setPerguntasRespondidas(novoEstado)
+    }
 
 
     return (
-        <PerguntaContainer cores={cores}>
-            {estado1}
-            {estado2}
-            {estado3}
-            {estado4}
-            {estado5}
-            {estado6}
-            {estado7}
+        <PerguntaContainer>
 
+            {displayPergunta}
 
         </PerguntaContainer >
     )
@@ -148,16 +173,16 @@ const PerguntaContainer = styled.section`
         }
   }
   .marcada p{
-  text-decoration-line: line-through;
+    text-decoration-line: line-through;
   }
   .verde p{
-    color: ${props => props.cores.verde};
+    color:#2FBE34;
   }
   .amarelo p{
-    color: ${props => props.cores.amarelo};
+    color:#ff922e;
   }
   .vermelho p{
-    color: ${props => props.cores.vermelho};
+    color:#ff3030;
   }
 `
 
@@ -180,14 +205,16 @@ const ContainerBotoes = styled.section`
   color: #FFFFFF;
   border-radius: 5px;
   padding:5px;
-}
-  .verde{
-    background-color: ${props => props.cores.verde};
   }
-  .amarelo{
-    background-color: ${props => props.cores.amarelo};
+
+  .verde {
+    background-color:#2FBE34;
   }
-  .vermelho{
-    background-color: ${props => props.cores.vermelho};
+  .amarelo {
+    background-color:#ff922e;
   }
+  .vermelho {
+    background-color:#ff3030;
+  }
+
 `
