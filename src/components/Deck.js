@@ -6,9 +6,9 @@ import Pergunta from "./Pergunta.js"
 export default function Deck(props) {
 
   const { questions, cores, icones, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
-    perguntasRespondidas, setPerguntasRespondidas } = props
+    perguntasRespondidas, setPerguntasRespondidas, progresso, setProgresso } = props
 
-
+  console.log("Deck:", perguntasRespondidas)
 
   return (
     <main>
@@ -25,6 +25,8 @@ export default function Deck(props) {
           setPerguntasViradas={setPerguntasViradas}
           perguntasRespondidas={perguntasRespondidas}
           setPerguntasRespondidas={setPerguntasRespondidas}
+          progresso={progresso}
+          setProgresso={setProgresso}
         />)}
     </main>
   )

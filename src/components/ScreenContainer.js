@@ -10,13 +10,9 @@ import iconeVirar from "./img/seta_virar.png"
 import React from "react"
 
 
-export default function ScreenContainer({ questions }) {
+export default function ScreenContainer({ questions, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
+    perguntasRespondidas, setPerguntasRespondidas, progresso, setProgresso }) {
 
-
-    //estados das cartas
-    const [perguntasClicadas, setPerguntasClicadas] = React.useState([])
-    const [perguntasViradas, setPerguntasViradas] = React.useState([])
-    const [perguntasRespondidas, setPerguntasRespondidas] = React.useState([])
 
     const cores = {
         verde: "#2FBE34",
@@ -45,11 +41,14 @@ export default function ScreenContainer({ questions }) {
                 setPerguntasViradas={setPerguntasViradas}
                 perguntasRespondidas={perguntasRespondidas}
                 setPerguntasRespondidas={setPerguntasRespondidas}
+                progresso={progresso}
+                setProgresso={setProgresso}
             />
             <Rodape
                 icones={icones}
                 perguntasRespondidas={perguntasRespondidas}
-                setPerguntasRespondidas={setPerguntasRespondidas}
+                progresso={progresso}
+
             />
         </Screen>
     )

@@ -1,128 +1,147 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
-import play from "./img/seta_play.png"
 import virar from "./img/seta_virar.png"
 
 
 export default function Pergunta(props) {
 
 
+
     const { idx, questions, cores, icones, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
-        perguntasRespondidas, setPerguntasRespondidas } = props
+        perguntasRespondidas, setPerguntasRespondidas, progresso, setProgresso } = props
 
 
-    //situações em que estarão os slots das perguntas
-    function perguntaFechada(idx) {
-        return (
-            <div className="fechada" onClick={() => clickPergunta(idx)} >
-                <p>Pergunta {idx + 1}</p>
-                <img src={play} alt="?" />
-            </div>
-        )
-    }
-
-    function perguntaAberta(idx) {
-        return (
-            <div className="aberta" >
-                <p>{questions[idx].textQuestion}</p>
-                <img onClick={() => virarPergunta(idx)} src={virar} alt="?" />
-            </div>
-        )
-    }
-
-    function resposta(idx) {
-        return (
-            <div className="aberta">
-                <p>{questions[idx].textAnswer}</p>
-                <ContainerBotoes cores={cores}>
-                    <button onClick={() => responderPergunta(idx, "errado")} className="vermelho">Não lembrei</button>
-                    <button onClick={() => responderPergunta(idx, "quase")} className="amarelo">Quase não lembrei</button>
-                    <button onClick={() => responderPergunta(idx, "certo")} className="verde">Zap!</button>
-                </ContainerBotoes>
-            </div>
-        )
-    }
-
-    function perguntaFechadaMarcada(idx, resultado) {
-
-        let ic = undefined;
-        let classe = undefined;
-
-        if (resultado === "certo") {
-            ic = icones.certo
-            classe = "verde"
-        } else if (resultado === "quase") {
-            ic = icones.quase
-            classe = "amarelo"
-        } else if (resultado === "errado") {
-            ic = icones.erro
-            classe = "vermelho"
-        }
-
-        return (
-            <div className={`fechada marcada ${classe}`}>
-                <p>Pergunta {idx + 1}</p>
-                <img src={ic} alt="?" />
-            </div>
-
-        )
-    }
 
 
-    //estado do slot da pergunta a ser renderizado
-    const [displayPergunta, setDisplayPergunta] = React.useState(perguntaFechada(idx));
+    //estados possiveis: fechado, aberto, resposta, marcada
+    const [estadoTela, setEstadoTela] = useState("fechado")
 
-
-    
-    //Açoes no ambiente 
+    //rsultado
+    const [resultado, setResultado] = useState("")
 
 
     //Clicar na pergunta para ela abrir
     function clickPergunta(idx) {
-        console.log("clickPergunta acionado")
 
-        const novoEstado = []
+
+        const novoEstado = [...perguntasClicadas]
         novoEstado.push(idx)
 
-        setDisplayPergunta(perguntaAberta(idx))
+
+
+        setEstadoTela("aberto")
+
         setPerguntasClicadas(novoEstado)
     }
 
     //CLicar no icone Virar para mostrar a resposta
     function virarPergunta(idx) {
-        console.log("virarPergunta(idx) Acionado")
+
 
         const novoEstado = [...perguntasViradas]
         novoEstado.push(idx)
 
-        setDisplayPergunta(resposta(idx))
-        setPerguntasViradas(novoEstado)
-    }
+        setEstadoTela("resposta")
 
+
+
+        setPerguntasViradas(novoEstado)
+
+    }
 
     //Clicar em algum botao para marcar a resposta
     function responderPergunta(idx, resultado) {
-        console.log("Pergunta responderPergunta acionado", resultado)
 
-        const novoEstado = [...perguntasRespondidas,idx]
 
-        setDisplayPergunta(perguntaFechadaMarcada(idx, resultado))
+        const novoEstado = Object.assign({}, perguntasRespondidas)
+        novoEstado[idx] = resultado
+        let vT = progresso + 1 
+
         setPerguntasRespondidas(novoEstado)
+        setResultado(resultado)
+        setProgresso(vT)
+        setEstadoTela("marcado")
 
-        //testes
-        console.log("variavel teste para atualizar o estado:",novoEstado)
-        console.log("estado dentro do componente", perguntasRespondidas)
+
     }
 
 
     return (
         <PerguntaContainer>
 
-            {displayPergunta}
+            {estadoTela === "fechado" && <PerguntaFechada idx={idx} icones={icones} perguntasRespondidas={perguntasRespondidas} clickPergunta={clickPergunta} />}
+            {estadoTela === "aberto" && <PerguntaAberta idx={idx} questions={questions} perguntasRespondidas={perguntasRespondidas} virarPergunta={virarPergunta} />}
+            {estadoTela === "resposta" && <Resposta idx={idx} cores={cores} questions={questions} perguntasRespondidas={perguntasRespondidas} responderPergunta={responderPergunta} icones={icones} setPerguntasRespondidas={setPerguntasRespondidas} />}
+            {estadoTela === "marcado" && <PerguntaFechadaMarcada idx={idx} icones={icones} resultado={resultado} perguntasRespondidas={perguntasRespondidas} />}
+
 
         </PerguntaContainer >
     )
 }
+
+function PerguntaFechada({ idx, icones, perguntasRespondidas, clickPergunta }) {
+
+
+    return (
+        <div className="fechada" onClick={() => clickPergunta(idx, perguntasRespondidas)} >
+            <p>Pergunta {idx + 1}</p>
+            <img src={icones.play} alt="?" />
+        </div>
+    )
+}
+
+function PerguntaAberta({ idx, questions, perguntasRespondidas, virarPergunta }) {
+
+    return (
+        <div className="aberta" >
+            <p>{questions[idx].textQuestion}</p>
+            <img onClick={() => virarPergunta(idx, perguntasRespondidas)} src={virar} alt="?" />
+        </div>
+    )
+}
+
+function Resposta({ idx, questions, cores, perguntasRespondidas, responderPergunta, icones, setDisplayPergunta, setPerguntasRespondidas }) {
+
+
+    return (
+        <div className="aberta">
+            <p>{questions[idx].textAnswer}</p>
+            <ContainerBotoes cores={cores}>
+                <button onClick={() => responderPergunta(idx, "errado", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="vermelho">Não lembrei</button>
+                <button onClick={() => responderPergunta(idx, "quase", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="amarelo">Quase não lembrei</button>
+                <button onClick={() => responderPergunta(idx, "certo", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="verde">Zap!</button>
+            </ContainerBotoes>
+        </div>
+    )
+}
+
+function PerguntaFechadaMarcada({ idx, icones, resultado }) {
+
+    let ic = undefined;
+    let classe = undefined;
+
+    if (resultado === "certo") {
+        ic = icones.certo
+        classe = "verde"
+
+    } else if (resultado === "errado") {
+        ic = icones.erro
+        classe = "vermelho"
+    } else if (resultado === "quase") {
+        ic = icones.quase
+        classe = "amarelo"
+    }
+
+    return (
+        <div className={`fechada marcada ${classe}`}>
+            <p>Pergunta {idx + 1}</p>
+            <img src={ic} alt="?" />
+        </div>
+
+    )
+}
+
+
 
 //styled components
 const PerguntaContainer = styled.section`

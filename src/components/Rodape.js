@@ -1,28 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components"
 import questions from "./questions";
 
 
 
-export default function Rodape({icones}) {
+export default function Rodape({ icones, perguntasRespondidas, progresso }) {
 
-  let perguntasRespondidasTeste = 3;
+
+
+  //estados dos icones : certo, quase, certo
+  const [iconeProgresso, setIconeProgresso] = useState("")
+
+  //i é a chave, ou idx 
+
+
   let totalPerguntas = Object.keys(questions).length
-
-
 
   return (
     <Foot>
-      <p>{perguntasRespondidasTeste}/{totalPerguntas} Concluidos</p>
-      <ContainerIcones>
-        <img src={icones.certo} alt="?" />
-        <img src={icones.quase} alt="?" />
-        <img src={icones.erro} alt="?" />
-      </ContainerIcones>
+      <p>{progresso}/{totalPerguntas} Concluidos</p>
+      <div>
+        {Object.keys(perguntasRespondidas).map((k, v) => { <img src={icones[v]} alt="?" /> })}
+      </div>
     </Foot>
   )
-}
 
+}
 /*
 BONUS
 <p>?/? Concluidos</p>
@@ -49,11 +52,10 @@ const Foot = styled.footer`
   font-weight: 400;
   font-size: 18px;
   color: #333333;}
-`
 
-
-const ContainerIcones = styled.div`
-  img{
-  margin:5px;
+  div img{
+    margin: 5px;
   }
 `
+
+
