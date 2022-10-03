@@ -107,7 +107,7 @@ function Resposta({ idx, questions, cores, perguntasRespondidas, responderPergun
         <div className="aberta">
             <p>{questions[idx].textAnswer}</p>
             <ContainerBotoes cores={cores}>
-                <button onClick={() => responderPergunta(idx, "errado", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="vermelho">Não lembrei</button>
+                <button onClick={() => responderPergunta(idx, "erro", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="vermelho">Não lembrei</button>
                 <button onClick={() => responderPergunta(idx, "quase", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="amarelo">Quase não lembrei</button>
                 <button onClick={() => responderPergunta(idx, "certo", icones, setDisplayPergunta, setPerguntasRespondidas, perguntasRespondidas, PerguntaFechadaMarcada)} className="verde">Zap!</button>
             </ContainerBotoes>
@@ -124,7 +124,7 @@ function PerguntaFechadaMarcada({ idx, icones, resultado }) {
         ic = icones.certo
         classe = "verde"
 
-    } else if (resultado === "errado") {
+    } else if (resultado === "erro") {
         ic = icones.erro
         classe = "vermelho"
     } else if (resultado === "quase") {
