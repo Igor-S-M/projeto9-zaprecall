@@ -8,10 +8,15 @@ import iconeQuase from "./img/icone_quase.png"
 import iconePlay from "./img/seta_play.png"
 import iconeVirar from "./img/seta_virar.png"
 import React from "react"
-import questions from './questions.js';
 
 
-export default function ScreenContainer() {
+export default function ScreenContainer({ questions }) {
+
+
+    //estados das cartas
+    const [perguntasClicadas, setPerguntasClicadas] = React.useState([])
+    const [perguntasViradas, setPerguntasViradas] = React.useState([])
+    const [perguntasRespondidas, setPerguntasRespondidas] = React.useState([])
 
     const cores = {
         verde: "#2FBE34",
@@ -28,12 +33,6 @@ export default function ScreenContainer() {
         virar: iconeVirar
     }
 
-
-    //estados das cartas
-    const [perguntasClicadas, setPerguntasClicadas] = React.useState([])
-    const [perguntasViradas, setPerguntasViradas] = React.useState([])
-    const [perguntasRespondidas, setPerguntasRespondidas] = React.useState([])
-
     return (
         <Screen>
             <Cabecalho />
@@ -48,7 +47,6 @@ export default function ScreenContainer() {
                 setPerguntasRespondidas={setPerguntasRespondidas}
             />
             <Rodape
-                cores={cores}
                 icones={icones}
                 perguntasRespondidas={perguntasRespondidas}
                 setPerguntasRespondidas={setPerguntasRespondidas}

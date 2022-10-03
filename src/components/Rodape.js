@@ -1,19 +1,14 @@
 import React from "react";
 import styled from "styled-components"
+import questions from "./questions";
 
 
 
-
-export default function Rodape({ cores, icones, perguntasViradas, setPerguntasViradas,
-  perguntaRespondida, setPerguntaRespondida }) {
+export default function Rodape({icones}) {
 
   let perguntasRespondidasTeste = 3;
-  let totalPerguntas = 8;
+  let totalPerguntas = Object.keys(questions).length
 
-  function responderPergunta(corIndice) {
-    /*corIndice == r || corIndice == g || corIndice == b*/
-    console.log("Rodape responderPergunta acionado", corIndice)
-}
 
 
   return (

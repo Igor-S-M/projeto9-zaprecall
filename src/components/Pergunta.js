@@ -7,10 +7,11 @@ import virar from "./img/seta_virar.png"
 export default function Pergunta(props) {
 
 
-    const { idx, question, cores, icones, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
+    const { idx, questions, cores, icones, perguntasClicadas, setPerguntasClicadas, perguntasViradas, setPerguntasViradas,
         perguntasRespondidas, setPerguntasRespondidas } = props
 
 
+    //situações em que estarão os slots das perguntas
     function perguntaFechada(idx) {
         return (
             <div className="fechada" onClick={() => clickPergunta(idx)} >
@@ -23,7 +24,7 @@ export default function Pergunta(props) {
     function perguntaAberta(idx) {
         return (
             <div className="aberta" >
-                <p>{question.textQuestion}</p>
+                <p>{questions[idx].textQuestion}</p>
                 <img onClick={() => virarPergunta(idx)} src={virar} alt="?" />
             </div>
         )
@@ -32,7 +33,7 @@ export default function Pergunta(props) {
     function resposta(idx) {
         return (
             <div className="aberta">
-                <p>{question.textAnswer}</p>
+                <p>{questions[idx].textAnswer}</p>
                 <ContainerBotoes cores={cores}>
                     <button onClick={() => responderPergunta(idx, "errado")} className="vermelho">Não lembrei</button>
                     <button onClick={() => responderPergunta(idx, "quase")} className="amarelo">Quase não lembrei</button>
@@ -66,62 +67,51 @@ export default function Pergunta(props) {
 
         )
     }
-    /*
-        const estado1 = perguntaFechada(idx)
-        const estado2 = perguntaAberta(idx)
-        const estado3 = resposta(idx)
-        const estado5 = perguntaFechadaMarcada(idx, "certo")
-        const estado6 = perguntaFechadaMarcada(idx, "quase")
-        const estado7 = perguntaFechadaMarcada(idx, "erro")
-    */
 
+
+    //estado do slot da pergunta a ser renderizado
     const [displayPergunta, setDisplayPergunta] = React.useState(perguntaFechada(idx));
 
+
+    
+    //Açoes no ambiente 
+
+
+    //Clicar na pergunta para ela abrir
     function clickPergunta(idx) {
         console.log("clickPergunta acionado")
-        const novoEstado = [...perguntasClicadas]
 
-        if (novoEstado === []) {
-            novoEstado.push(idx)
-        } else {
-
-            novoEstado.pop()
-            novoEstado.push(idx)
-        }
+        const novoEstado = []
+        novoEstado.push(idx)
 
         setDisplayPergunta(perguntaAberta(idx))
         setPerguntasClicadas(novoEstado)
     }
 
-
+    //CLicar no icone Virar para mostrar a resposta
     function virarPergunta(idx) {
         console.log("virarPergunta(idx) Acionado")
-        const novoEstado = [...perguntasViradas]
 
-        if (novoEstado === []) {
-            novoEstado.push(idx)
-        } else {
-            novoEstado.pop()
-            novoEstado.push(idx)
-        }
+        const novoEstado = [...perguntasViradas]
+        novoEstado.push(idx)
 
         setDisplayPergunta(resposta(idx))
         setPerguntasViradas(novoEstado)
     }
 
+
+    //Clicar em algum botao para marcar a resposta
     function responderPergunta(idx, resultado) {
         console.log("Pergunta responderPergunta acionado", resultado)
-        const novoEstado = [...perguntasRespondidas]
 
-        if (novoEstado === []) {
-            novoEstado.push(idx)
-        } else {
-            novoEstado.pop()
-            novoEstado.push(idx)
-        }
+        const novoEstado = [...perguntasRespondidas,idx]
 
         setDisplayPergunta(perguntaFechadaMarcada(idx, resultado))
         setPerguntasRespondidas(novoEstado)
+
+        //testes
+        console.log("variavel teste para atualizar o estado:",novoEstado)
+        console.log("estado dentro do componente", perguntasRespondidas)
     }
 
 
@@ -134,7 +124,7 @@ export default function Pergunta(props) {
     )
 }
 
-
+//styled components
 const PerguntaContainer = styled.section`
     div{
         width: 300px;
